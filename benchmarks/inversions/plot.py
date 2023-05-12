@@ -26,9 +26,8 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     root = pathlib.Path(args.root)
-    result_files = list(root.glob('*.csv'))
-    result_files.sort()
-    if len(result_files) == 0:
+    result_files = sorted(root.glob('*.csv'))
+    if not result_files:
         print(f"There are no files to plot in {root}")
         sys.exit(1)
 

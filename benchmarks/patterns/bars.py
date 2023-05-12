@@ -67,6 +67,8 @@ def main():
     ]
 
     root = pathlib.Path(args.root)
+    barwidth = 0.6
+    spacing = 1
     for file in root.iterdir():
         data = {}
         for line in file.open():
@@ -81,15 +83,21 @@ def main():
             data[size][distribution][algo] = results
 
         # Choose the colour palette and markers to use
-        if args.use_alt_palette:
-            # That one has the advantage of being infinite
-            palette = pyplot.cm.rainbow(numpy.linspace(0, 1, len(algos)))
-        else:
-            # Colorblind-friendly palette (https://gist.github.com/thriveth/8560036)
-            palette = ['#377eb8', '#ff7f00', '#4daf4a',
-                       '#f781bf', '#a65628', '#984ea3',
-                       '#999999', '#e41a1c', '#dede00']
-
+        palette = (
+            pyplot.cm.rainbow(numpy.linspace(0, 1, len(algos)))
+            if args.use_alt_palette
+            else [
+                '#377eb8',
+                '#ff7f00',
+                '#4daf4a',
+                '#f781bf',
+                '#a65628',
+                '#984ea3',
+                '#999999',
+                '#e41a1c',
+                '#dede00',
+            ]
+        )
         for size in data:
             distributions = (
                 "Shuffled",
@@ -107,8 +115,6 @@ def main():
             groupnames = distributions
             groupsize = len(algos)
             groups = [[data[size][distribution][algo] for algo in algos] for distribution in distributions]
-            barwidth = 0.6
-            spacing = 1
             groupwidth = groupsize * barwidth + spacing
 
             colors = iter(palette)
@@ -139,7 +145,9 @@ def main():
             ax.autoscale_view()
             pyplot.ylim(pyplot.ylim()[0] + 1, pyplot.ylim()[1] - 1)
 
-            pyplot.title("Sorting a std::vector<double> with $10^{}$ elements".format(round(math.log(size, 10))))
+            pyplot.title(
+                f"Sorting a std::vector<double> with $10^{round(math.log(size, 10))}$ elements"
+            )
             pyplot.legend(loc="best")
 
             figure = pyplot.gcf()

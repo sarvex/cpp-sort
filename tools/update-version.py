@@ -53,7 +53,7 @@ def replace_version_number(paths: list[Path], old_version: str, new_version: str
     with fileinput.FileInput(files=paths, inplace=True) as input:
         for line in input:
             if res := re.search(copyright_regex, line):
-                print(f"# Copyright (c) {res.group('first_year')}-{current_year} Morwenn")
+                print(f"# Copyright (c) {res['first_year']}-{current_year} Morwenn")
             else:
                 print(line.replace(old_version, new_version), end='')
 

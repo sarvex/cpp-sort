@@ -45,15 +45,14 @@ def compare_and_swap(x, a, b):
 def partner(index: int, merge: int, step: int) -> int:
     if step == 1:
         return index ^ (1 << (merge - 1))
-    else:
-        scale, box = 1 << (merge - step), 1 << step
-        sn = index / scale - (index / scale / box) * box
+    scale, box = 1 << (merge - step), 1 << step
+    sn = index / scale - (index / scale / box) * box
 
-        if sn == 0 or sn == box - 1:
-            return index # no exchange at this level
-        elif sn % 2 == 0:
-            return index - scale
-        return index + scale
+    if sn in [0, box - 1]:
+        return index # no exchange at this level
+    elif sn % 2 == 0:
+        return index - scale
+    return index + scale
 
 
 ###########################################################
@@ -133,8 +132,6 @@ def pairwise_merge(lo, hi, r):
         yield from pairwise_merge(lo + r, hi - r, step)
         for i in range(lo + r, hi - r + 1, step):
             yield i, i + r
-    else:
-        pass
         # yield lo, lo + r
 
 def pairwise_split(lo, hi):

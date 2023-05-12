@@ -52,7 +52,7 @@ def verify_network(pairs: list[tuple]):
     # Zero-one principle: if the sorting network is valid for all boolean inputs
     # then it is valid for all inputs.
     n = max(max(i, j) for i, j in pairs) + 1
-    inputs = [z3.Bool("x" + str(k)) for k in range(n)]
+    inputs = [z3.Bool(f"x{str(k)}") for k in range(n)]
 
     network = inputs[:]
     for i, j in pairs:
@@ -119,11 +119,10 @@ def generate_cxx(network: list[list[tuple]]):
         rhs = "first" if pair[1] == 0 else f"first + {pair[1]}"
         swaps.append(f"iter_swap_if({lhs}, {rhs}, compare, projection);")
 
-    # Generate list of indices
-    indices = []
-    for line in network:
-        indices.append(", ".join(f"{{{pair[0]}, {pair[1]}}}" for pair in line) + ",")
-
+    indices = [
+        ", ".join(f"{{{pair[0]}, {pair[1]}}}" for pair in line) + ","
+        for line in network
+    ]
     return template.format(
         nb_inputs=highest_index + 1,
         swaps="\n            ".join(swaps),

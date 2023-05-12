@@ -21,7 +21,7 @@ def main():
 
     root = pathlib.Path(args.root)
     result_files = list(root.glob('*.csv'))
-    if len(result_files) == 0:
+    if not result_files:
         print(f"There are no files to plot in {root}")
         sys.exit(1)
 
